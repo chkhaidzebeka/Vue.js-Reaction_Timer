@@ -1,8 +1,23 @@
 <template>
   <h1>Reaction Timer</h1>
+  <input 
+    type="number"
+    v-model="elements"
+    :readonly="isPlaying"
+    placeholder="How many elements do you want?"
+  >
   <button @click="start" :disabled="isPlaying">Play</button>
+  <p>We will generate {{ elements }} elements.</p>
   <hr>
-  <Block v-if="isPlaying" :delay="delay" @end="endGame" />
+  <p v-show="started">Please wait... Be prepared :)</p>
+  <Block 
+    v-if="isPlaying" 
+    :delay="delay" 
+    :index="index" 
+    :elements="parseInt(elements)"
+    @end="endGame"
+    @started="this.started=false"
+  />
   <Result v-if="showResult" :score="score" />
 </template>
 
@@ -17,20 +32,27 @@ export default {
     return {
       isPlaying: false,
       showResult: false,
+      started: false,
       delay: null,
       score: null,
+      elements: 10
     }
   },
   methods: {
+    random(min,max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    },
     start() {
-      this.delay = 2000 + Math.random() * 5000;
+      this.delay = this.random(2,7);
+      this.index = this.random(1,this.delay-1);
       this.isPlaying = true;
       this.showResult = false;
+      this.started = true;
     },
-    endGame(reactionTime) {
+    endGame(reactionTime,showResult) {
       this.score = reactionTime;
       this.isPlaying = false;
-      this.showResult = true;
+      this.showResult = showResult;
     }
   }
 }
@@ -72,5 +94,12 @@ button:focus {
 button:disabled {
   background: darkgray;
   cursor: not-allowed;
+}
+
+input {
+  outline: none;
+  border: 2px solid #126c44;
+  padding: 8px;
+  margin-right: 10px;
 }
 </style>
