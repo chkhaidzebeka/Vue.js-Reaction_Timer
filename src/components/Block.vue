@@ -37,12 +37,16 @@ export default {
         validate(userIndex) {
             clearInterval(this.timer);
             this.showBlock = false;
-
+            let calculatedScore = this.reactionTime*this.elements;
             if (userIndex != this.index) {
                 this.$emit('end', this.reactionTime,false);
                 alert("you failed");
                 return false;
-             } else this.$emit('end', this.reactionTime,true);
+             } else {
+                this.$emit('end', this.reactionTime,true);
+                let score = localStorage.getItem("the_best_score");
+                if (score == null || calculatedScore > score) localStorage.setItem("the_best_score",calculatedScore);
+            }
         }
     }
 }
@@ -50,7 +54,6 @@ export default {
 
 <style>
     .main {
-        max-width: 90%;
         border-radius: 5px;
         background:#0f303e;
         color: #fff;
@@ -62,7 +65,6 @@ export default {
         display: flex;
         justify-content: center;
         flex-wrap: wrap;
-        width: 70%;
         margin: 10px auto;
         position: relative;
     }

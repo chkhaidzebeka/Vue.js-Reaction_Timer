@@ -1,5 +1,6 @@
 <template>
   <h1>Reaction Timer</h1>
+  <code>Score = ReactionTime * Number of elements</code>
   <input 
     type="number"
     v-model="elements"
@@ -18,7 +19,11 @@
     @end="endGame"
     @started="this.started=false"
   />
-  <Result v-if="showResult" :score="score" />
+  <Result 
+    v-if="showResult" 
+    :elements="parseInt(elements)" 
+    :reactionTime="reactionTime"
+  />
 </template>
 
 <script>
@@ -34,7 +39,7 @@ export default {
       showResult: false,
       started: false,
       delay: null,
-      score: null,
+      reactionTime: null,
       elements: 10
     }
   },
@@ -44,13 +49,13 @@ export default {
     },
     start() {
       this.delay = this.random(2,7);
-      this.index = this.random(1,this.delay-1);
+      this.index = this.random(1,this.elements);
       this.isPlaying = true;
       this.showResult = false;
       this.started = true;
     },
     endGame(reactionTime,showResult) {
-      this.score = reactionTime;
+      this.reactionTime = reactionTime;
       this.isPlaying = false;
       this.showResult = showResult;
     }
@@ -70,6 +75,8 @@ body {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+  width: 70%;
+  margin: 0 auto;
 }
 
 button {
@@ -80,6 +87,7 @@ button {
   width: 100px;
   color: #fff;
   cursor: pointer;
+  margin-top: 10px;
 }
 
 button:hover {
@@ -98,8 +106,18 @@ button:disabled {
 
 input {
   outline: none;
+  width: 230px;
   border: 2px solid #126c44;
   padding: 8px;
   margin-right: 10px;
+}
+
+code {
+  display: block;
+  border: 1px solid #1d2c67;
+  padding: 5px;
+  max-width: 350px;
+  background: #e4e0ff;
+  margin: 0 auto 10px auto;
 }
 </style>
